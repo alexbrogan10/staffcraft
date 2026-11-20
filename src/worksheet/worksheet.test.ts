@@ -155,7 +155,10 @@ describe('pageToSvg', () => {
     expect(svg).toMatch(/^<svg xmlns="http:\/\/www.w3.org\/2000\/svg" width="612" height="792"/);
     expect(svg).toContain('Tom &amp; Jerry &lt;3 &quot;quotes&quot;');
     expect(svg).toContain('font-weight="bold"');
-    expect(svg).toContain('text-anchor="middle"');
+    // Anchors are resolved to a start position using the font metrics.
+    expect(svg).not.toContain('text-anchor');
+    const width = measureText('Tom & Jerry <3 "quotes"', 10, 'bold');
+    expect(svg).toContain(`x="${Math.round((1 - width / 2) * 100) / 100}"`);
   });
 });
 

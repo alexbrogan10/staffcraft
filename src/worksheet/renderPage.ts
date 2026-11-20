@@ -1,4 +1,5 @@
 import type { Page, PageItem } from './layout';
+import { measureText } from './text';
 
 /**
  * The family name the preview's @font-face and the PDF exporter both register.
@@ -20,13 +21,17 @@ function n(value: number): string {
 
 function itemToSvg(item: PageItem): string {
   switch (item.kind) {
-    case 'text':
+    case 'text': {
+      // Anchors are resolved here with the bundled font metrics rather than left to
+      // the viewer, so the preview and the PDF align text identically.
+      const width = measureText(item.text, item.size, item.weight);
+      const shift = item.anchor === 'middle' ? width / 2 : item.anchor === 'end' ? width : 0;
       return (
-        `<text x="${n(item.x)}" y="${n(item.y)}" font-size="${n(item.size)}"` +
+        `<text x="${n(item.x - shift)}" y="${n(item.y)}" font-size="${n(item.size)}"` +
         (item.weight === 'bold' ? ' font-weight="bold"' : '') +
-        (item.anchor === 'start' ? '' : ` text-anchor="${item.anchor}"`) +
         ` fill="${item.fill}">${escapeXml(item.text)}</text>`
       );
+    }
     case 'line':
       return (
         `<line x1="${n(item.x1)}" y1="${n(item.y1)}" x2="${n(item.x2)}" y2="${n(item.y2)}"` +
