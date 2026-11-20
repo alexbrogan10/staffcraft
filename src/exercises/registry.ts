@@ -1,8 +1,16 @@
+import { intervals } from './intervals';
+import { keySignatures } from './key-signatures';
 import { noteNaming } from './note-naming';
+import { rhythmCounting } from './rhythm-counting';
 import type { ExercisePlugin } from './types';
 
 /** Every exercise type, in the order the builder lists them. */
-export const EXERCISES: readonly ExercisePlugin[] = [noteNaming];
+export const EXERCISES: readonly ExercisePlugin[] = [
+  noteNaming,
+  intervals,
+  keySignatures,
+  rhythmCounting,
+];
 
 const BY_ID = new Map(EXERCISES.map((plugin) => [plugin.id, plugin]));
 
