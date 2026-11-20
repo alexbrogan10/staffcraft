@@ -44,6 +44,15 @@ describe('VexFlowRenderer', () => {
     expect(center).toBeLessThan(160 * 0.8);
   });
 
+  it('reports the treble clef tail and low notes in contentBottom', () => {
+    const treble = renderer.renderStaff(single('G4'), options);
+    const bass = renderer.renderStaff(single('D3', 'bass'), options);
+    expect(treble.contentBottom).toBeGreaterThan(treble.staffBottom + options.staffSpace);
+    expect(bass.contentBottom).toBe(bass.staffBottom);
+    const low = renderer.renderStaff(single('E2', 'bass'), options);
+    expect(low.contentBottom).toBeCloseTo(low.staffBottom + 1.5 * options.staffSpace);
+  });
+
   it('grows vertically for ledger lines', () => {
     const plain = renderer.renderStaff(single('G4'), options);
     const low = renderer.renderStaff(single('A3'), options);

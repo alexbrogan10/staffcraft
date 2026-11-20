@@ -17,7 +17,6 @@ import {
   beamGroupUnits,
   keyFromFifths,
   formatPitch,
-  ledgerLinesForStep,
   staffStep,
   TOP_LINE_STEP,
   UNITS_PER_WHOLE,
@@ -217,7 +216,10 @@ export class VexFlowRenderer implements NotationRenderer {
     const staffTop = stave.getYForLine(0) * scale;
     const staffBottom = stave.getYForLine(4) * scale;
     const lowest = lowestStep(spec);
-    const ledgerDepth = lowest < 0 ? (-lowest / 2 + 0.5) * options.staffSpace : 0;
+    // The lower edge of the lowest notehead below the staff, if any.
+    const noteBottom = staffBottom + (lowest < 0 ? -lowest / 2 + 0.5 : 0) * options.staffSpace;
+    // The treble clef's tail hangs below the bottom line.
+    const clefBottom = staffBottom + (spec.clef === 'treble' ? 1.7 : 0) * options.staffSpace;
     return {
       markup,
       width: options.width,
@@ -225,10 +227,7 @@ export class VexFlowRenderer implements NotationRenderer {
       staffTop,
       staffBottom,
       noteCenters: notes.map((n) => ((n.getNoteHeadBeginX() + n.getNoteHeadEndX()) / 2) * scale),
-      contentBottom: Math.max(
-        staffBottom + (ledgerLinesForStep(lowest) > 0 ? ledgerDepth : 0),
-        staffBottom,
-      ),
+      contentBottom: Math.max(staffBottom, noteBottom, clefBottom),
     };
   }
 }
