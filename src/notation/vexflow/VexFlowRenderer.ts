@@ -186,6 +186,8 @@ export class VexFlowRenderer implements NotationRenderer {
 
     if (tickables.length > 0) {
       const voice = new Voice().setMode(VoiceMode.SOFT).addTickables(tickables);
+      // Attach notes to the stave first so their absolute positions include the clef.
+      tickables.forEach((t) => t.setStave(stave));
       new Formatter().joinVoices([voice]).formatToStave([voice], stave);
       const only = notes[0];
       if (only && tickables.length === 1) {
@@ -194,7 +196,7 @@ export class VexFlowRenderer implements NotationRenderer {
         const center = (only.getNoteHeadBeginX() + only.getNoteHeadEndX()) / 2;
         const tickContext = only.getTickContext();
         tickContext.setX(
-          tickContext.getX() + (stave.getNoteStartX() + stave.getNoteEndX()) / 2 - center,
+          tickContext.getX() + lerp(stave.getNoteStartX(), stave.getNoteEndX(), 0.5) - center,
         );
       }
       voice.draw(context, stave);
@@ -229,6 +231,10 @@ export class VexFlowRenderer implements NotationRenderer {
       ),
     };
   }
+}
+
+function lerp(from: number, to: number, t: number): number {
+  return from + (to - from) * t;
 }
 
 function round(n: number): number {
