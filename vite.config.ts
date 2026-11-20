@@ -5,6 +5,12 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   base: process.env.VITE_BASE_PATH ?? '/',
+  build: {
+    // VexFlow ships its music font as JavaScript glyph outlines (~500 kB of the
+    // main chunk), and the preview needs it immediately. jsPDF is split out and
+    // loaded on first export.
+    chunkSizeWarningLimit: 900,
+  },
   test: {
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
     environment: 'node',
