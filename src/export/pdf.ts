@@ -58,6 +58,8 @@ export interface PdfOptions {
   readonly title: string;
   readonly paperSize: PaperSize;
   readonly fonts: PdfFonts;
+  /** Deflate page content (default true). Turned off in tests to inspect the output. */
+  readonly compress?: boolean;
 }
 
 /**
@@ -66,7 +68,12 @@ export interface PdfOptions {
  */
 export async function createPdf(document: LaidOutDocument, options: PdfOptions): Promise<jsPDF> {
   const { width, height } = PAPER_SIZES[options.paperSize];
-  const pdf = new jsPDF({ unit: 'pt', format: [width, height], orientation: 'portrait' });
+  const pdf = new jsPDF({
+    unit: 'pt',
+    format: [width, height],
+    orientation: 'portrait',
+    compress: options.compress ?? true,
+  });
   registerFonts(pdf, options.fonts);
   pdf.setFont(WORKSHEET_FONT_FAMILY, 'normal');
   pdf.setDocumentProperties({

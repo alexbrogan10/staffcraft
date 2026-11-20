@@ -29,10 +29,10 @@ const config: WorksheetConfig = {
   ],
 };
 
-async function render(paperSize: WorksheetConfig['paperSize']) {
+async function render(paperSize: WorksheetConfig['paperSize'], compress = true) {
   const sheet = buildWorksheet({ ...config, paperSize });
   const doc = layoutDocument(sheet, new VexFlowRenderer());
-  const pdf = await createPdf(doc, { title: config.title, paperSize, fonts });
+  const pdf = await createPdf(doc, { title: config.title, paperSize, fonts, compress });
   return { pdf, doc, bytes: new Uint8Array(pdf.output('arraybuffer')) };
 }
 
@@ -55,7 +55,7 @@ describe('createPdf', () => {
   });
 
   it('draws all text with the embedded worksheet font', async () => {
-    const { bytes } = await render('letter');
+    const { bytes } = await render('letter', false);
     const text = new TextDecoder('latin1').decode(bytes);
     expect(text).toContain('/FontFile2');
 
@@ -75,6 +75,12 @@ describe('createPdf', () => {
       expect(font).toBe('Staffcraft#20Sans');
     }
   });
+});
+
+it('compresses page content by default', async () => {
+  const compressed = await render('letter');
+  const plain = await render('letter', false);
+  expect(compressed.bytes.length).toBeLessThan(plain.bytes.length / 2);
 });
 
 describe('pdfFileName', () => {
