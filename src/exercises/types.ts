@@ -48,6 +48,8 @@ export interface ExercisePlugin<Q = unknown> {
   readonly id: string;
   readonly title: string;
   readonly description: string;
+  /** One short line per difficulty, shown in the builder. */
+  readonly levels: Readonly<Record<Difficulty, string>>;
   readonly settings: readonly ExerciseSetting[];
   readonly defaultCount: number;
   readonly maxCount: number;

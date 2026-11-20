@@ -63,6 +63,11 @@ export const noteNaming: ExercisePlugin<NoteNamingQuestion> = {
   id: 'note-naming',
   title: 'Note Naming',
   description: 'Name notes on the treble or bass staff, with accidentals and ledger lines.',
+  levels: {
+    easy: 'Natural notes on the staff.',
+    medium: 'Adds sharps and flats.',
+    hard: 'Sharps, flats and up to three ledger lines.',
+  },
   settings: [CLEF_SETTING],
   defaultCount: 12,
   maxCount: 40,

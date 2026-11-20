@@ -32,6 +32,7 @@ describe.each(EXERCISES.map((p) => [p.id, p] as const))('%s plugin contract', (_
     expect(plugin.columns).toBeGreaterThanOrEqual(1);
     expect(plugin.defaultCount).toBeGreaterThan(0);
     expect(plugin.maxCount).toBeGreaterThanOrEqual(plugin.defaultCount);
+    for (const difficulty of DIFFICULTIES) expect(plugin.levels[difficulty]).not.toBe('');
     for (const setting of plugin.settings) {
       expect(setting.choices.map((c) => c.value)).toContain(setting.defaultValue);
     }
