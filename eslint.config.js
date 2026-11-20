@@ -36,8 +36,11 @@ export default tseslint.config(
       'no-restricted-imports': [
         'error',
         {
-          paths: [
-            { name: 'vexflow', message: 'Use the NotationRenderer interface from src/notation.' },
+          patterns: [
+            {
+              regex: '^vexflow(/.*)?$',
+              message: 'Use the NotationRenderer interface from src/notation.',
+            },
           ],
         },
       ],
@@ -53,7 +56,7 @@ export default tseslint.config(
         {
           patterns: [
             {
-              group: ['react', 'react-dom', 'vexflow', 'jspdf', 'svg2pdf.js'],
+              regex: '^(react|react-dom|vexflow|jspdf|svg2pdf\\.js)(/.*)?$',
               message: 'src/domain must stay pure TypeScript.',
             },
             { group: ['../*'], message: 'src/domain must not import from other layers.' },
