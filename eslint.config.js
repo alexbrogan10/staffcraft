@@ -28,7 +28,23 @@ export default tseslint.config(
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
     },
   },
-  // Layering: the domain module must stay framework-free.
+  // Only the VexFlow adapter may import VexFlow.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/notation/vexflow/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            { name: 'vexflow', message: 'Use the NotationRenderer interface from src/notation.' },
+          ],
+        },
+      ],
+    },
+  },
+  // Layering: the domain module must stay framework-free (declared after the
+  // VexFlow rule because a later block's options replace an earlier one's).
   {
     files: ['src/domain/**/*.ts'],
     rules: {
@@ -41,21 +57,6 @@ export default tseslint.config(
               message: 'src/domain must stay pure TypeScript.',
             },
             { group: ['../*'], message: 'src/domain must not import from other layers.' },
-          ],
-        },
-      ],
-    },
-  },
-  // Only the VexFlow adapter may import VexFlow.
-  {
-    files: ['src/**/*.{ts,tsx}'],
-    ignores: ['src/notation/vexflow/**'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          paths: [
-            { name: 'vexflow', message: 'Use the NotationRenderer interface from src/notation.' },
           ],
         },
       ],
