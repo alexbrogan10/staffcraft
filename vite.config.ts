@@ -8,5 +8,7 @@ export default defineConfig({
   test: {
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
     environment: 'node',
+    // svg2pdf's UMD build cannot see jsPDF under Node; bundle its ES build instead.
+    server: { deps: { inline: ['svg2pdf.js'] } },
   },
 });
